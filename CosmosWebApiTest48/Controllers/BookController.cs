@@ -4,6 +4,7 @@ using Swashbuckle.Swagger.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace CosmosWebApiTest48.Controllers
 
       public BookController()
       {
+         Trace.AutoFlush = true;
          if (m_Container == null)
          {
             var client = new CosmosClient(ConfigurationManager.ConnectionStrings["Cosmos"].ConnectionString);
@@ -60,6 +62,7 @@ namespace CosmosWebApiTest48.Controllers
 
             foreach (var call in m_Callbacks.Values)
             {
+               Trace.Write($"Callback invoked {call.Id} - {call.Uri}");
                call.InvokeAsync<Book>(bookCreate.Resource);
             }
 
@@ -99,6 +102,7 @@ namespace CosmosWebApiTest48.Controllers
             return BadRequest();
          }
          m_Callbacks.Add(callback.Id, callback);
+         Trace.Write($"Callback added {callback.Id} - {callback.Uri}");
          return CreatedAtRoute(nameof(Unsubscribe), new
          {
             subscriptionId = callback.Id
@@ -113,6 +117,7 @@ namespace CosmosWebApiTest48.Controllers
       {
          if (m_Callbacks.ContainsKey(callbackId))
          {
+            Trace.Write($"Callback removed {callbackId}");
             m_Callbacks.Remove(callbackId);
             return Ok();
          }

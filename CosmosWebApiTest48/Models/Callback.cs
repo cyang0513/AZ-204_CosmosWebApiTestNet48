@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -14,6 +15,7 @@ namespace CosmosWebApiTest48.Models
    {
       public Callback()
       {
+         Trace.AutoFlush = true;
          this.Id = Guid.NewGuid().ToString();
       }
 
@@ -30,6 +32,8 @@ namespace CosmosWebApiTest48.Models
 
          httpClient.DefaultRequestHeaders.Accept.Clear();
          httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+         Trace.Write($"Target out put {JObject.FromObject(triggerOutput)}");
 
          return Task.Run(async () => await httpClient.PostAsJsonAsync(Uri, JObject.FromObject(triggerOutput))).Result;
       }
