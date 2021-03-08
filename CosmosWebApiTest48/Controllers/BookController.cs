@@ -101,6 +101,10 @@ namespace CosmosWebApiTest48.Controllers
          {
             return BadRequest();
          }
+         if (m_Callbacks.Values.Any(x=>x.Uri.ToString() == callback.Uri.ToString()))
+         {
+            return BadRequest();
+         }
          m_Callbacks.Add(callback.Id, callback);
          Trace.Write($"Callback added {callback.Id} - {callback.Uri}");
          return CreatedAtRoute(nameof(Unsubscribe), new
